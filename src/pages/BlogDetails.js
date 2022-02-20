@@ -13,6 +13,7 @@ export default function BlogDetails() {
     const res = await fetch(`https://api.spaceflightnewsapi.net/v3/blogs/${params.id}`);
     if (!res.ok) throw await res.json();
     const data = await res.json();
+    document.title = `${data.title}`;
     if (isMounted) {
       setBlog(data);
       setLoading(false);
@@ -21,46 +22,47 @@ export default function BlogDetails() {
   };
 
   useEffect(() => {
-    fetchData().catch(err => {
-      setError({
-        status: err.statusCode,
-        message: err.message
+    fetchData()
+      .catch(err => {
+        setError({
+          status: err.statusCode,
+          message: err.message
+        });
+        setLoading(false);
       });
-      setLoading(false);
-    });
     return () => isMounted = false;
   }, []);
 
   if (error) {
     return (
-      <>
+      <section className="section">
         {loading ? (
           <p>Loading...</p>
         ) : (
           <Error404 status={`${error.status}`} message={`${error.message}`} />
         )}
-      </>
+      </section>
     );
   }
 
   return (
-    <section>
+    <section className="section">
       <h1>Blog Details</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <article>
+        <article className="article">
           <h2>{blog.title}</h2>
-          <img src={blog.imageUrl} alt={blog.title} style={{ width: '25rem', height: '25rem' }} />
+          <img src={blog.imageUrl} alt={blog.title} className="article-image" />
           <p>{blog.summary}</p>
           <p>Site : {blog.newsSite}</p>
           <p>Published At :
-            <time>{new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(new Date(blog.publishedAt))}</time>
+            &nbsp;<time>{new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(new Date(blog.publishedAt))}</time>
           </p>
           <p>Updated At :
-            <time>{new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(new Date(blog.updatedAt))}</time>
+            &nbsp;<time>{new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(new Date(blog.updatedAt))}</time>
           </p>
-          <a href={`${blog.url}`} target="_blank">Reference</a>
+          <a href={`${blog.url}`} target="_blank">Source</a>
         </article>
       )}
     </section>

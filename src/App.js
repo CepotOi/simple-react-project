@@ -9,12 +9,14 @@ import Error404 from './pages/Error404';
 
 function App() {
   return (
-    <div className="App">
-      <nav>
-        <li><Link to="/profile">Profile</Link></li>
-        <li><Link to="/contact">contact</Link></li>
-        <li><Link to="/blogs">Blog</Link></li>
-        <li><Link to="/">Home</Link></li>
+    <div className="app">
+      <div className="brand">Rizki Hutama's Web</div>
+
+      <nav className="nav">
+        <Link className="nav-item" to="/">Home</Link>
+        <Link className="nav-item" to="/profile">Profile</Link>
+        <Link className="nav-item" to="/contact">Contact</Link>
+        <Link className="nav-item" to="/blogs">Blog</Link>
       </nav>
 
       <Routes>

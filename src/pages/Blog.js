@@ -6,8 +6,6 @@ export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState({});
-
-  //* cara kedua
   let isMounted = true;
 
   const fetchData = async () => {
@@ -22,6 +20,8 @@ export default function Blog() {
   };
 
   useEffect(() => {
+    document.title = 'Blog';
+
     fetchData().catch(err => {
       setError({
         status: 404,
@@ -34,20 +34,20 @@ export default function Blog() {
   }, []);
 
   return (
-    <section>
+    <section className="section">
       <h1>Blog</h1>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <article>
+        <div className="articles-container">
           {error && <Error404 status={`${error.status}`} message={`${error.message}`} />}
           {blogs.map(blog => (
-            <div key={blog.id}>
+            <article className="articles" key={blog.id}>
               <h2><Link to={`/blogs/${blog.id}`} >{blog.title}</Link></h2>
-              <time>{new Date(blog.publishedAt).toLocaleDateString()}</time>
-            </div>
+              <time className="article-date">{new Date(blog.publishedAt).toLocaleDateString()}</time>
+            </article>
           ))}
-        </article>
+        </div>
       )}
     </section>
   );
