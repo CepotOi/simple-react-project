@@ -11,7 +11,7 @@ export default function Contact() {
       <h1>Contact</h1>
       <div>
         <p>Email : <a href="mailto:rizkihutama05@gmail.com">My Email</a></p>
-        <p>Github pages : <a href="https://cepotoi.github.io" target="_blank">My Portfolio</a></p>
+        <p>Github pages : <a href="https://cepotoi.github.io" target="_blank" rel="noreferrer">My Portfolio</a></p>
       </div>
     </section>
   );

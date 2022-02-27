@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Error404 from './Error404';
 
 export default function BlogDetails() {
@@ -7,31 +7,32 @@ export default function BlogDetails() {
   const [blog, setBlog] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState({});
-  let isMounted = true;
-
-  const fetchData = async () => {
-    const res = await fetch(`https://api.spaceflightnewsapi.net/v3/blogs/${params.id}`);
-    if (!res.ok) throw await res.json();
-    const data = await res.json();
-    document.title = `${data.title}`;
-    if (isMounted) {
-      setBlog(data);
-      setLoading(false);
-      setError(null);
-    }
-  };
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    fetchData()
-      .catch(err => {
-        setError({
-          status: err.statusCode,
-          message: err.message
-        });
+    document.title = 'Blog Details';
+
+    const fetchData = async () => {
+      const res = await fetch(`https://api.spaceflightnewsapi.net/v3/blogs/${params.id}`);
+      if (!res.ok) throw new Error('Could not fetch blogs');
+      const data = await res.json();
+      if (isMounted.current) {
+        setBlog(data);
         setLoading(false);
+        setError(null);
+      }
+    };
+
+    fetchData().catch(err => {
+      setError({
+        status: 404,
+        message: err.message
       });
-    return () => isMounted = false;
-  }, []);
+      setLoading(false);
+    });
+
+    return () => isMounted.current = false;
+  }, [params]);
 
   if (error) {
     return (
@@ -62,7 +63,7 @@ export default function BlogDetails() {
           <p>Updated At :
             &nbsp;<time>{new Intl.DateTimeFormat('en-US', { dateStyle: 'full' }).format(new Date(blog.updatedAt))}</time>
           </p>
-          <a href={`${blog.url}`} target="_blank">Source</a>
+          <a href={`${blog.url}`} target="_blank" rel="noreferrer">Source</a>
         </article>
       )}
     </section>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Error404 from './Error404';
 
@@ -6,13 +6,13 @@ export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState({});
-  let isMounted = true;
+  const isMounted = useRef(true);
 
   const fetchData = async () => {
     const res = await fetch('https://api.spaceflightnewsapi.net/v3/blogs');
     if (!res.ok) throw new Error('Could not fetch blogs');
     const data = await res.json();
-    if (isMounted) {
+    if (isMounted.current) {
       setBlogs(data);
       setLoading(false);
       setError(null);
@@ -30,7 +30,7 @@ export default function Blog() {
       setLoading(false);
     });
 
-    return () => isMounted = false;
+    return () => isMounted.current = false;
   }, []);
 
   return (
